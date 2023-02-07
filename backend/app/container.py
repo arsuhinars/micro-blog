@@ -22,9 +22,16 @@ class AppContainer(containers.DeclarativeContainer):
         session_factory=db.provided.session
     )
 
-    user_service = providers.Singleton(UserService)
+    user_service = providers.Singleton(
+        UserService,
+        user_repo=user_repository
+    )
     article_service = providers.Singleton(ArticleService)
-    auth_service = providers.Singleton(AuthService)
+    auth_service = providers.Singleton(
+        AuthService,
+        redis_client_factory=redis_db.provided.client,
+        secret_key=config.secret_key
+    )
 
     wiring_config = containers.WiringConfiguration(
         modules=[
