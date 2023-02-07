@@ -45,7 +45,7 @@ class UserService:
             email=normalized_email,
             password_salt=password_salt,
             password_key=password_key,
-            display_name=display_name
+            display_name=display_name.strip()
         )
 
         return UserSchema.from_orm(await self._user_repo.save(user))
@@ -67,7 +67,7 @@ class UserService:
         if db_user == None:
             raise ContentNotFoundError()
         
-        db_user.display_name = user.display_name
+        db_user.display_name = user.display_name.strip()
         await self._user_repo.save(db_user)
 
         return user
