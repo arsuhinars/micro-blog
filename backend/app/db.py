@@ -1,12 +1,19 @@
+import asyncio
 from contextlib import asynccontextmanager, AbstractAsyncContextManager
+from typing import Callable
 
-from sqlalchemy.ext.asyncio import create_async_engine, async_scoped_session
+from sqlalchemy.ext.asyncio import (
+    create_async_engine, async_scoped_session, AsyncConnection
+)
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
 
 
 class Base(DeclarativeBase):
     pass
+
+
+from app.models import User, Article
 
 
 class Database:
@@ -16,19 +23,22 @@ class Database:
             async_sessionmaker(
                 bind=self._engine,
                 autoflush=False,
-                expire_on_commit=True
-            )
+                expire_on_commit=False
+            ),
+            lambda: asyncio.current_task
         )
 
-    def create_database(self):
-        Base.metadata.create_all(self._engine)
+    async def create_database(self):
+        conn: AsyncConnection
+        async with self._engine.begin() as conn:
+            await conn.run_sync(Base.metadata.create_all)
 
     @property
     def engine(self):
         return self._engine
     
     @asynccontextmanager
-    async def session(self) -> callable[..., AbstractAsyncContextManager[AsyncSession]]:
+    async def session(self) -> Callable[..., AbstractAsyncContextManager[AsyncSession]]:
         session: AsyncSession = self._session_factory()
         try:
             yield session
