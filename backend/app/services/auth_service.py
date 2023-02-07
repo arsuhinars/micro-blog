@@ -95,7 +95,7 @@ class AuthService:
             InvalidTokenError: Refresh token is not valid
         """
         redis: Redis
-        with self._redis_client_factory() as redis:
+        async with self._redis_client_factory() as redis:
             user_id: int = await redis.get(
                 f'refresh_token:{refresh_token}:user_id'
             )
