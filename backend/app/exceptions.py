@@ -1,9 +1,10 @@
+from http import HTTPStatus
 from typing import ClassVar
 
 
 class AppException(Exception):
     """ Common class for all API exceptions """
-    status_code: ClassVar[int] = 500
+    status_code: ClassVar[int] = HTTPStatus.INTERNAL_SERVER_ERROR
     error_code: ClassVar[int] = 0
     details: ClassVar[str] = 'App exception'
 
@@ -28,48 +29,48 @@ class AppException(Exception):
 
 
 class UnexpectedError(AppException):
-    status_code = 500
+    status_code = HTTPStatus.INTERNAL_SERVER_ERROR
     error_code = 1
     details = 'Unexpected error'
 
 
 class InvalidInputFormatError(AppException):
-    status_code = 400
+    status_code = HTTPStatus.UNPROCESSABLE_ENTITY
     error_code = 2
     details = 'Invalid input format'
     
 
 class AuthorizationRequiredError(AppException):
-    status_code = 401
+    status_code = HTTPStatus.UNAUTHORIZED
     error_code = 3
     details = 'Authorization required'
 
 
 class AccessDeniedError(AppException):
-    status_code = 403
+    status_code = HTTPStatus.FORBIDDEN
     error_code = 4
     details = 'Access is denied'
 
 
 class ContentNotFoundError(AppException):
-    status_code = 404
+    status_code = HTTPStatus.NOT_FOUND
     error_code = 5
     details = 'Content was not found'
 
 
 class InvalidTokenError(AppException):
-    status_code = 400
+    status_code = HTTPStatus.BAD_REQUEST
     error_code = 6
     details = 'Invalid token'
 
 
 class ExpiredTokenError(AppException):
-    status_code = 400
+    status_code = HTTPStatus.BAD_REQUEST
     error_code = 7
     details = 'The token is expired'
 
 
 class TakenLoginError(AppException):
-    status_code = 400
+    status_code = HTTPStatus.BAD_REQUEST
     error_code = 8
     details = 'This login is already taken'
