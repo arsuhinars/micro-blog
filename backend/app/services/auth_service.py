@@ -49,7 +49,7 @@ class AuthService:
     async def validate_access_token(self, access_token: str) -> int:
         """
         Validates access token provided by client. Raises exception if 
-        access_token is invalid. Can be used as the FastAPI dependency.
+        access_token is invalid.
         
         Args:
             access_token: Query parameter provided by client
@@ -83,7 +83,7 @@ class AuthService:
     async def validate_refresh_token(self, refresh_token: str) -> int:
         """
         Validates refresh token provided by client. Raises exception if 
-        refresh_token is invalid. Can be used as the FastAPI dependency.
+        refresh_token is invalid.
         
         Args:
             refresh_token: Query parameter provided by client
@@ -92,7 +92,7 @@ class AuthService:
             User id from decoded token
 
         Raises:
-            InvalidTokenError: Refresh token is not valid
+            InvalidTokenError: Refresh token is invalid
         """
         redis: Redis
         async with self._redis_client_factory() as redis:
