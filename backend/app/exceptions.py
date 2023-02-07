@@ -9,9 +9,9 @@ class AppException(Exception):
 
     def __init__(
         self,
-        status_code: int | None,
-        error_code: int | None,
-        details: str | None
+        status_code: int | None = None,
+        error_code: int | None = None,
+        details: str | None = None
     ):
         if status_code is None:
             status_code = self.__class__.status_code
