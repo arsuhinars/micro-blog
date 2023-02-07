@@ -37,6 +37,7 @@ class AppContainer(containers.DeclarativeContainer):
         modules=[
             'app.endpoints.auth',
             'app.endpoints.user',
-            'app.endpoints.article'
+            'app.endpoints.article',
+            'app.dependencies'
         ]
     )
