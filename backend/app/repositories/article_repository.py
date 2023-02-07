@@ -14,12 +14,12 @@ class ArticleRepository:
 
     async def get_by_id(self, id: int) -> Article | None:
         session: AsyncSession
-        with self.session_factory() as session:
+        async with self.session_factory() as session:
             return await session.get(Article, id)
 
     async def get_by_author_id(self, author_id: int) -> list[Article]:
         session: AsyncSession
-        with self.session_factory() as session:
+        async with self.session_factory() as session:
             result = await session.execute(
                 select(Article).where(Article.author_id == author_id)
             )
@@ -27,7 +27,7 @@ class ArticleRepository:
 
     async def save(self, article: Article):
         session: AsyncSession
-        with self.session_factory() as session:
+        async with self.session_factory() as session:
             session.add(article)
             await session.flush()
             await session.commit()
