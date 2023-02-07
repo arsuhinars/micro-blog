@@ -104,3 +104,9 @@ class AuthService:
                 raise InvalidTokenError(details='Invalid refresh token')
 
             return user_id
+
+    async def reset_refresh_token(self, refresh_token: str):
+        """ Makes given refresh token invalid. """
+        redis: Redis
+        async with self._redis_client_factory() as redis:
+            await redis.delete(f'refresh_token:{refresh_token}:user_id')
