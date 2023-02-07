@@ -22,10 +22,10 @@ class AuthService:
         self._redis_client_factory = redis_client_factory
         self._secret_key = secret_key
 
-    def generate_access_token(self, user_id: int) -> str:
+    async def generate_access_token(self, user_id: int) -> str:
         return jwt.encode(
             {
-                'exp': datetime.utcnow().timestamp() + config.ACCESS_TOKEN_LIFETIME,
+                'exp': datetime.utcnow() + timedelta(seconds=config.ACCESS_TOKEN_LIFETIME),
                 'aud': str(user_id)
             },
             self._secret_key,
@@ -34,7 +34,7 @@ class AuthService:
 
     async def generate_refresh_token(self, user_id: int) -> str:
         redis: Redis
-        with self._redis_client_factory() as redis:
+        async with self._redis_client_factory() as redis:
             refresh_token: str = urlsafe_b64encode(
                 os.urandom(config.REFRESH_TOKEN_SIZE)
             ).decode('utf-8')
@@ -46,7 +46,7 @@ class AuthService:
             )
             return refresh_token
 
-    def validate_access_token(self, access_token: str) -> int:
+    async def validate_access_token(self, access_token: str) -> int:
         """
         Validates access token provided by client. Raises exception if 
         access_token is invalid. Can be used as the FastAPI dependency.
@@ -69,8 +69,9 @@ class AuthService:
                 {
                     'verify_signature': True,
                     'verify_exp': True,
+                    'verify_aud': False,
                     'require_exp': True,
-                    'require_aud': True
+                    'require_aud': False
                 },
             )
             return int(claims.get('aud'))
