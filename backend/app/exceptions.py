@@ -70,7 +70,13 @@ class ExpiredTokenError(AppException):
     details = 'The token is expired'
 
 
+class InvalidCredentialsError(AppException):
+    status_code = HTTPStatus.NOT_FOUND
+    error_code = 8
+    details = 'User with such credentials doesn\'t exist'
+
+
 class TakenLoginError(AppException):
     status_code = HTTPStatus.BAD_REQUEST
-    error_code = 8
+    error_code = 9
     details = 'This login is already taken'
