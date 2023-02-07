@@ -1,4 +1,5 @@
 from contextlib import AbstractAsyncContextManager, asynccontextmanager
+from typing import Callable
 
 from redis.asyncio import ConnectionPool, Redis
 
@@ -12,7 +13,7 @@ class RedisDatabase:
         return self._conn_poll
 
     @asynccontextmanager
-    async def client(self) -> callable[..., AbstractAsyncContextManager[Redis]]:
+    async def client(self) -> Callable[..., AbstractAsyncContextManager[Redis]]:
         try:
             client = Redis(connection_pool=self._conn_poll)
             yield client
