@@ -3,6 +3,8 @@ services:
   backend:
     build:
       target: development
+    volumes:
+      - ./backend/app:/backend/app
   
   redis:
     ports:
