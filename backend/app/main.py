@@ -10,12 +10,30 @@ from app.error_handlers import (
     handle_app_exception, handle_validation_error, handle_http_exception
 )
 
+APP_DESCRIPTION = """
+
+Source code is available on [GitHub](https://github.com/arsuhinars/micro-blog)
+
+"""
+
 
 def create_app() -> FastAPI:
     container = AppContainer()
 
-    app = FastAPI()
+    app = FastAPI(
+        redoc_url=None,
+        title='Micro-blog',
+        description=APP_DESCRIPTION,
+        contact={
+            'name': 'Arseny Fedorov',
+            'url': 'https://t.me/arsuhinars'
+        },
+        license_info={
+            'name': 'MIT License'
+        }
+    )
     app.container = container
+
     app.include_router(user_router)
     app.include_router(article_router)
     app.include_router(auth_router)
