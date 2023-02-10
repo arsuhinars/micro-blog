@@ -42,7 +42,10 @@ def create_app() -> FastAPI:
     app.add_exception_handler(RequestValidationError, handle_validation_error)
     app.add_exception_handler(HTTPException, handle_http_exception)
     
-    return app
+    db = container.db()
 
+    @app.on_event('startup')
+    async def on_startup():
+        await db.create_database()
 
 app = create_app()
