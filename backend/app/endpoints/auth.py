@@ -36,7 +36,7 @@ async def get_tokens(
         )
     if email is not None:
         try:
-            email = validate_email(email).email
+            email = validate_email(email, check_deliverability=False).email
         except EmailNotValidError:
             raise InvalidInputFormatError()
 
