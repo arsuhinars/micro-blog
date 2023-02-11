@@ -68,9 +68,9 @@ class UserService:
             raise ContentNotFoundError()
         
         db_user.display_name = user.display_name.strip()
-        await self._user_repo.save(db_user)
+        db_user = await self._user_repo.save(db_user)
 
-        return user
+        return UserSchema.from_orm(db_user)
     
     async def check_credentials(self, email: str, password: str) -> bool:
         user = await self._user_repo.get_by_email(email)
