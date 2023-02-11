@@ -15,6 +15,12 @@ email-validator = "*"
 dependency-injector = "*"
 
 [dev-packages]
+pytest = "*"
+pytest-asyncio = "*"
+pytest-mock = "*"
+pytest-repeat = "*"
+httpx = "*"
+faker = "*"
 
 [requires]
 python_version = "3.10"
