@@ -7,7 +7,7 @@ from app.exceptions import AuthorizationRequiredError
 
 
 @inject
-def validate_access_token(
+async def validate_access_token(
     access_token: str | None = None,
     auth_service: AuthService = Depends(Provide[AppContainer.auth_service])
 ) -> int:
@@ -20,4 +20,4 @@ def validate_access_token(
     """
     if access_token is None:
         raise AuthorizationRequiredError()
-    return auth_service.validate_access_token(access_token)
+    return await auth_service.validate_access_token(access_token)
