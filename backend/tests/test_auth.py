@@ -14,10 +14,9 @@ from tests.utils import assert_app_error
 from tests.defines import *
 
 
-def test_authorize(test_client: TestClient, create_fake_user):
-    user: UserSchema = create_fake_user[0]
-    email: str = create_fake_user[1]
-    password: str = create_fake_user[2]
+def test_authorize(test_client: TestClient, fake_user):
+    email: str = fake_user[1]
+    password: str = fake_user[2]
     
     # Test user credentials
     response = test_client.get(
@@ -84,9 +83,9 @@ def test_invalid_user(
     assert_app_error(response, InvalidCredentialsError)
 
 
-def test_invalid_tokens(test_client: TestClient, create_fake_user):
+def test_invalid_tokens(test_client: TestClient, fake_user):
     # Test invalid access token
-    user: UserSchema = create_fake_user[0]
+    user: UserSchema = fake_user[0]
     access_token = jwt.encode(
         {
             'exp': datetime.utcnow() + timedelta(seconds=config.ACCESS_TOKEN_LIFETIME),
@@ -120,9 +119,9 @@ def test_invalid_tokens(test_client: TestClient, create_fake_user):
     assert_app_error(response, InvalidTokenError)
 
 
-def test_invalid_request_body(test_client: TestClient, create_fake_user):
-    email: str = create_fake_user[1]
-    password: str = create_fake_user[2]
+def test_invalid_request_body(test_client: TestClient, fake_user):
+    email: str = fake_user[1]
+    password: str = fake_user[2]
 
     response = test_client.get(
         TOKENS_PATH,

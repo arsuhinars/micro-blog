@@ -29,7 +29,7 @@ class MockedRedis:
             self.data.pop(key, None)
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture
 def mock_redis_database(mocker: MockerFixture):
     redis_mock = mocker.patch('app.redis.RedisDatabase')
     redis_mock.client.return_value.__aenter__.return_value = MockedRedis()
@@ -92,7 +92,7 @@ class FakeArticleRepository:
         return article
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture
 def test_client(
     monkeypatch: MonkeyPatch,
     mocker: MockerFixture,
@@ -118,8 +118,8 @@ def test_client(
     return TestClient(create_app())
 
 
-@pytest.fixture(scope='function')
-async def create_fake_user(test_client: TestClient, faker: Faker):
+@pytest.fixture
+async def fake_user(test_client: TestClient, faker: Faker):
     email = faker.email()
     password = faker.password()
     
