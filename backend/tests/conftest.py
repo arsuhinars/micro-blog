@@ -1,7 +1,7 @@
 from datetime import date
 
 import pytest
-from pytest import MonkeyPatch
+from pytest import MonkeyPatch, FixtureRequest
 from pytest_mock import MockerFixture
 from dependency_injector import providers
 from fastapi.testclient import TestClient
@@ -36,7 +36,7 @@ def mock_redis_database(mocker: MockerFixture):
     return redis_mock
 
 
-@pytest.fixture(scope='function')
+@pytest.fixture
 def mock_database(mocker: MockerFixture):
     return mocker.patch('app.db.Database')
 
@@ -129,6 +129,28 @@ async def fake_user(test_client: TestClient, faker: Faker):
     )
 
     return ( user, email, password )
+
+
+@pytest.fixture
+async def fake_users(
+    request: FixtureRequest,
+    test_client: TestClient,
+    faker: Faker
+) -> list[UserSchema]:
+    user_count: int = request.param
+
+    container: AppContainer = test_client.app.container
+    user_service = container.user_service()
+
+    users = []
+    for i in range(user_count):
+        users.append(await user_service.create(
+            faker.email(),
+            faker.password(),
+            faker.first_name()
+        ))
+    
+    return users
 
 
 @pytest.fixture
