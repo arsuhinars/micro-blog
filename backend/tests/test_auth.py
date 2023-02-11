@@ -10,8 +10,8 @@ from jose import jwt
 import app.config as config
 from app.schemas import UserSchema, AuthTokens
 from app.exceptions import *
-from .utils import assert_app_error
-from .defines import *
+from tests.utils import assert_app_error
+from tests.defines import *
 
 
 def test_authorize(test_client: TestClient, create_fake_user):

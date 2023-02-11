@@ -11,7 +11,7 @@ from app.container import AppContainer
 from app.models import User, Article
 from app.schemas import UserSchema
 from app.factory import create_app
-from .defines import *
+from tests.defines import *
 
 
 class MockedRedis:
