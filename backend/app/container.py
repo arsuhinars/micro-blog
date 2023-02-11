@@ -8,7 +8,7 @@ from app.services import UserService, ArticleService, AuthService
 
 
 class AppContainer(containers.DeclarativeContainer):
-    config = providers.Configuration(pydantic_settings=[AppSettings()])
+    config = providers.Configuration()
 
     db = providers.Singleton(Database, url=config.database_url)
     redis_db = providers.Singleton(RedisDatabase, url=config.redis_url)
