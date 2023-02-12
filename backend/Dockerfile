@@ -10,7 +10,7 @@ WORKDIR /backend
 # Install python packages
 COPY Pipfile .
 COPY Pipfile.lock .
-RUN pip install pipenv --no-cache-dir --disable-pip-version-check 
+RUN pip install pipenv --no-cache-dir --disable-pip-version-check
 RUN pipenv install --system --deploy --ignore-pipfile
 
 EXPOSE $BACKEND_PORT
