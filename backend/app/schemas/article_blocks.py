@@ -35,4 +35,5 @@ class ArticleImage(BaseModel):
     margin: Literal['narrow', 'middle', 'wide']
 
 
-ArticleBlock = ArticleHeader | ArticleParagraph | ArticleQuote | ArticleList | ArticleHorizontalRule | ArticleImage
+ArticleBlock = ArticleHeader | ArticleParagraph | ArticleQuote | \
+    ArticleList | ArticleHorizontalRule | ArticleImage

@@ -13,7 +13,7 @@ class Base(DeclarativeBase):
     pass
 
 
-from app.models import User, Article
+from app.models import User, Article    # noqa: F401, E402
 
 
 class Database:
@@ -36,9 +36,11 @@ class Database:
     @property
     def engine(self):
         return self._engine
-    
+
     @asynccontextmanager
-    async def session(self) -> Callable[..., AbstractAsyncContextManager[AsyncSession]]:
+    async def session(
+        self
+    ) -> Callable[..., AbstractAsyncContextManager[AsyncSession]]:
         session: AsyncSession = self._session_factory()
         try:
             yield session

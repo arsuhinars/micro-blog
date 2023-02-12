@@ -9,9 +9,14 @@ from app.models import User
 
 class UserRepository:
 
-    def __init__(self, session_factory: Callable[..., AbstractAsyncContextManager[AsyncSession]]):
+    def __init__(
+        self,
+        session_factory: Callable[
+            ..., AbstractAsyncContextManager[AsyncSession]
+        ]
+    ):
         self.session_factory = session_factory
-    
+
     async def get_by_id(self, id: int) -> User | None:
         session: AsyncSession
         async with self.session_factory() as session:

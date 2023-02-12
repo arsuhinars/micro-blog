@@ -13,7 +13,9 @@ class RedisDatabase:
         return self._conn_poll
 
     @asynccontextmanager
-    async def client(self) -> Callable[..., AbstractAsyncContextManager[Redis]]:
+    async def client(
+        self
+    ) -> Callable[..., AbstractAsyncContextManager[Redis]]:
         try:
             client = Redis(connection_pool=self._conn_poll)
             yield client

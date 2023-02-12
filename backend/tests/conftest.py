@@ -7,23 +7,23 @@ from dependency_injector import providers
 from fastapi.testclient import TestClient
 from faker import Faker
 
+import tests.defines as defines
 from app.container import AppContainer
 from app.models import User, Article
 from app.schemas import UserSchema
 from app.factory import create_app
-from tests.defines import *
 
 
 class MockedRedis:
     def __init__(self):
         self.data = {}
-    
+
     async def get(self, name: str):
         return self.data.get(name)
-    
+
     async def set(self, name: str, value: str, *args):
         self.data[name] = value
-    
+
     async def delete(self, *keys: list[str]):
         for key in keys:
             self.data.pop(key, None)
@@ -49,7 +49,7 @@ class FakeUserRepository:
 
     async def get_by_id(self, id: int) -> User | None:
         return self.id_table.get(id)
-    
+
     async def get_by_email(self, email: str) -> User | None:
         return self.email_table.get(email)
 
@@ -81,7 +81,7 @@ class FakeArticleRepository:
                 lambda id: self.id_table[id]
             )
         )
-    
+
     async def save(self, article: Article) -> Article:
         if article.id is None:
             article.id = self.counter
@@ -101,7 +101,7 @@ def test_client(
 ):
     monkeypatch.setenv('DATABASE_URL', '')
     monkeypatch.setenv('REDIS_URL', '')
-    monkeypatch.setenv('SECRET_KEY', TEST_SECRET_KEY)
+    monkeypatch.setenv('SECRET_KEY', defines.TEST_SECRET_KEY)
 
     container = AppContainer()
     container.redis_db.override(mock_redis_database)
@@ -122,13 +122,13 @@ def test_client(
 async def fake_user(test_client: TestClient, faker: Faker):
     email = faker.email()
     password = faker.password()
-    
+
     container: AppContainer = test_client.app.container
     user: UserSchema = await container.user_service().create(
         email, password, faker.first_name()
     )
 
-    return ( user, email, password )
+    return (user, email, password)
 
 
 @pytest.fixture
@@ -149,7 +149,7 @@ async def fake_users(
             faker.password(),
             faker.first_name()
         ))
-    
+
     return users
 
 

@@ -5,10 +5,10 @@ import pytest
 from fastapi.testclient import TestClient
 from faker import Faker
 
+import tests.defines as defines
 from app.schemas import UserSchema, UserCreateSchema
-from app.exceptions import *
+from app.exceptions import (InvalidInputFormatError, TakenLoginError)
 from tests.utils import assert_app_error
-from tests.defines import *
 
 
 def test_user_creation(test_client: TestClient, faker: Faker):
@@ -17,7 +17,7 @@ def test_user_creation(test_client: TestClient, faker: Faker):
     display_name = faker.first_name()
 
     response = test_client.post(
-        USER_PATH,
+        defines.USER_PATH,
         json=UserCreateSchema(
             email=email,
             password=password,
@@ -26,7 +26,7 @@ def test_user_creation(test_client: TestClient, faker: Faker):
     )
 
     assert response.status_code == HTTPStatus.OK
-    
+
     user = UserSchema.parse_obj(response.json())
 
     assert user.email == email
@@ -41,7 +41,7 @@ def test_creation_existing_user(
     user: UserSchema = fake_user[0]
 
     response = test_client.post(
-        USER_PATH,
+        defines.USER_PATH,
         json={
             'email': user.email,
             'password': faker.password(),
@@ -54,7 +54,7 @@ def test_creation_existing_user(
 
 def test_creation_with_invalid_email(test_client: TestClient, faker: Faker):
     response = test_client.post(
-        USER_PATH,
+        defines.USER_PATH,
         json={
             'email': 'invalid-email',
             'password': faker.password(),
@@ -67,14 +67,14 @@ def test_creation_with_invalid_email(test_client: TestClient, faker: Faker):
 
 def test_creation_with_missing_fields(test_client: TestClient, faker: Faker):
     response = test_client.post(
-        USER_PATH,
+        defines.USER_PATH,
         json={}
     )
 
     assert_app_error(response, InvalidInputFormatError)
 
     response = test_client.post(
-        USER_PATH,
+        defines.USER_PATH,
         json={
             'password': faker.password(),
             'display_name': faker.first_name()
@@ -84,7 +84,7 @@ def test_creation_with_missing_fields(test_client: TestClient, faker: Faker):
     assert_app_error(response, InvalidInputFormatError)
 
     response = test_client.post(
-        USER_PATH,
+        defines.USER_PATH,
         json={
             'email': faker.email(),
             'display_name': faker.first_name()
@@ -94,7 +94,7 @@ def test_creation_with_missing_fields(test_client: TestClient, faker: Faker):
     assert_app_error(response, InvalidInputFormatError)
 
     response = test_client.post(
-        USER_PATH,
+        defines.USER_PATH,
         json={
             'email': faker.email(),
             'password': faker.password()
@@ -106,7 +106,7 @@ def test_creation_with_missing_fields(test_client: TestClient, faker: Faker):
 
 def test_creation_with_empty_strings(test_client: TestClient, faker: Faker):
     response = test_client.post(
-        USER_PATH,
+        defines.USER_PATH,
         json={
             'email': '',
             'password': faker.password(),
@@ -117,7 +117,7 @@ def test_creation_with_empty_strings(test_client: TestClient, faker: Faker):
     assert_app_error(response, InvalidInputFormatError)
 
     response = test_client.post(
-        USER_PATH,
+        defines.USER_PATH,
         json={
             'email': faker.email(),
             'password': '',
@@ -128,7 +128,7 @@ def test_creation_with_empty_strings(test_client: TestClient, faker: Faker):
     assert_app_error(response, InvalidInputFormatError)
 
     response = test_client.post(
-        USER_PATH,
+        defines.USER_PATH,
         json={
             'email': faker.email(),
             'password': faker.password(),
@@ -151,7 +151,7 @@ def test_user_update(
     new_display_name = faker.first_name()
 
     response = test_client.put(
-        USER_PATH,
+        defines.USER_PATH,
         params={
             'access_token': access_token
         },
@@ -159,7 +159,7 @@ def test_user_update(
             'display_name': new_display_name
         }
     )
-    
+
     assert response.status_code == HTTPStatus.OK
 
     updated_user = UserSchema.parse_obj(response.json())
@@ -181,7 +181,7 @@ def test_update_wrong_data(
     access_token: str
 
     response = test_client.put(
-        USER_PATH,
+        defines.USER_PATH,
         params={
             'access_token': access_token
         },
@@ -194,7 +194,7 @@ def test_update_wrong_data(
     assert user.id == response.json()['id']
 
     response = test_client.put(
-        USER_PATH,
+        defines.USER_PATH,
         params={
             'access_token': access_token
         },
@@ -207,7 +207,7 @@ def test_update_wrong_data(
     assert user.email == response.json()['email']
 
     response = test_client.put(
-        USER_PATH,
+        defines.USER_PATH,
         params={
             'access_token': access_token
         },
@@ -229,7 +229,7 @@ def test_update_with_invalid_data(
     access_token: str
 
     response = test_client.put(
-        USER_PATH,
+        defines.USER_PATH,
         params={
             'access_token': access_token
         },
@@ -248,7 +248,7 @@ def test_current_user_get(
     access_token: str
 
     response = test_client.get(
-        USER_PATH,
+        defines.USER_PATH,
         params={
             'access_token': access_token
         }
@@ -266,7 +266,7 @@ def test_users_getting(
 ):
     for user in fake_users:
         response = test_client.get(
-            USER_PATH + f'/{user.id}'
+            defines.USER_PATH + f'/{user.id}'
         )
 
         received_user = UserSchema.parse_obj(response.json())

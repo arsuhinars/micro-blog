@@ -43,7 +43,7 @@ def create_app() -> FastAPI:
     app.add_exception_handler(AppException, handle_app_exception)
     app.add_exception_handler(RequestValidationError, handle_validation_error)
     app.add_exception_handler(HTTPException, handle_http_exception)
-    
+
     db = container.db()
 
     @app.on_event('startup')

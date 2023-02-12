@@ -16,7 +16,9 @@ from app.exceptions import (
 class AuthService:
     def __init__(
         self,
-        redis_client_factory: Callable[..., AbstractAsyncContextManager[Redis]],
+        redis_client_factory: Callable[
+            ..., AbstractAsyncContextManager[Redis]
+        ],
         secret_key: str
     ):
         self._redis_client_factory = redis_client_factory
@@ -25,7 +27,9 @@ class AuthService:
     async def generate_access_token(self, user_id: int) -> str:
         return jwt.encode(
             {
-                'exp': datetime.utcnow() + timedelta(seconds=config.ACCESS_TOKEN_LIFETIME),
+                'exp': datetime.utcnow() + timedelta(
+                    seconds=config.ACCESS_TOKEN_LIFETIME
+                ),
                 'aud': str(user_id)
             },
             self._secret_key,
@@ -48,12 +52,12 @@ class AuthService:
 
     async def validate_access_token(self, access_token: str) -> int:
         """
-        Validates access token provided by client. Raises exception if 
+        Validates access token provided by client. Raises exception if
         access_token is invalid.
-        
+
         Args:
             access_token: Query parameter provided by client
-        
+
         Returns:
             User id from decoded token
 
@@ -82,12 +86,12 @@ class AuthService:
 
     async def validate_refresh_token(self, refresh_token: str) -> int:
         """
-        Validates refresh token provided by client. Raises exception if 
+        Validates refresh token provided by client. Raises exception if
         refresh_token is invalid.
-        
+
         Args:
             refresh_token: Query parameter provided by client
-        
+
         Returns:
             User id from decoded token
 

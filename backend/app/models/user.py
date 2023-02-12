@@ -8,6 +8,10 @@ import app.config as config
 from app.db import Base
 
 
+class Article(Base):
+    ...
+
+
 class User(Base):
     __tablename__ = 'users'
 
@@ -29,4 +33,4 @@ class User(Base):
         String(config.USER_DISPLAY_NAME_LENGTH)
     )
 
-    articles: Mapped[list['Article']] = relationship(back_populates='author')
+    articles: Mapped[list[Article]] = relationship(back_populates='author')

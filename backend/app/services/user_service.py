@@ -15,7 +15,7 @@ from app.exceptions import (
 class UserService:
     def __init__(self, user_repo: UserRepository):
         self._user_repo = user_repo
-    
+
     @staticmethod
     def get_password_key(password: str, salt: bytes) -> bytes:
         return pbkdf2_hmac(
@@ -26,7 +26,12 @@ class UserService:
             config.PASSWORD_KEY_LENGTH
         )
 
-    async def create(self, email: str, password: str, display_name: str) -> UserSchema:
+    async def create(
+        self,
+        email: str,
+        password: str,
+        display_name: str
+    ) -> UserSchema:
         try:
             normalized_email: str = validate_email(
                 email,
@@ -52,30 +57,30 @@ class UserService:
 
     async def get_by_id(self, id: int) -> UserSchema | None:
         user = await self._user_repo.get_by_id(id)
-        if user == None:
+        if user is None:
             return None
         return UserSchema.from_orm(user)
 
     async def get_by_email(self, email: str) -> UserSchema | None:
         user = await self._user_repo.get_by_email(email)
-        if user == None:
+        if user is None:
             return None
         return UserSchema.from_orm(user)
 
     async def update(self, user: UserSchema) -> UserSchema:
         db_user = await self._user_repo.get_by_id(user.id)
-        if db_user == None:
+        if db_user is None:
             raise ContentNotFoundError()
-        
+
         db_user.display_name = user.display_name.strip()
         db_user = await self._user_repo.save(db_user)
 
         return UserSchema.from_orm(db_user)
-    
+
     async def check_credentials(self, email: str, password: str) -> bool:
         user = await self._user_repo.get_by_email(email)
-        if user == None:
+        if user is None:
             return False
-        
+
         password_key = self.get_password_key(password, user.password_salt)
         return user.password_key == password_key

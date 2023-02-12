@@ -11,12 +11,16 @@ from app.db import Base
 from app.schemas.article_blocks import ArticleBlock
 
 
+class User(Base):
+    ...
+
+
 class Article(Base):
     __tablename__ = 'articles'
 
     id: Mapped[int] = mapped_column(primary_key=True, autoincrement=True)
     author_id: Mapped[int] = mapped_column(ForeignKey('users.id'), index=True)
-    author: Mapped['User'] = relationship(back_populates='articles')
+    author: Mapped[User] = relationship(back_populates='articles')
     creation_time: Mapped[datetime] = mapped_column(
         server_default=func.now()
     )

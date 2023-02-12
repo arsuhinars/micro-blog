@@ -3,7 +3,10 @@ from http import HTTPStatus
 from fastapi.responses import JSONResponse
 from fastapi.exceptions import RequestValidationError, HTTPException
 
-from app.exceptions import *
+from app.exceptions import (
+    AppException, InvalidInputFormatError, AuthorizationRequiredError,
+    AccessDeniedError, ContentNotFoundError, UnexpectedError
+)
 from app.schemas import ErrorResponse
 
 
@@ -15,6 +18,7 @@ def handle_app_exception(req, exc: AppException):
             details=exc.details
         ).dict()
     )
+
 
 def handle_validation_error(req, exc: RequestValidationError):
     return handle_app_exception(req, InvalidInputFormatError())

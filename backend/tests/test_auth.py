@@ -8,32 +8,34 @@ from fastapi.testclient import TestClient
 from jose import jwt
 
 import app.config as config
+import tests.defines as defines
 from app.schemas import UserSchema, AuthTokens
-from app.exceptions import *
+from app.exceptions import (
+    InvalidTokenError, InvalidCredentialsError, InvalidInputFormatError
+)
 from tests.utils import assert_app_error
-from tests.defines import *
 
 
 def test_authorize(test_client: TestClient, fake_user):
     email: str = fake_user[1]
     password: str = fake_user[2]
-    
+
     # Test user credentials
     response = test_client.get(
-        TOKENS_PATH,
+        defines.TOKENS_PATH,
         params={
             'email': email,
             'password': password
         }
     )
-    
+
     assert response.status_code == HTTPStatus.OK
-    
+
     auth_tokens = AuthTokens.parse_obj(response.json())
 
     # Test access token
     response = test_client.get(
-        USER_PATH,
+        defines.USER_PATH,
         params={
             'access_token': auth_tokens.access_token
         }
@@ -43,7 +45,7 @@ def test_authorize(test_client: TestClient, fake_user):
 
     # Test refresh token
     response = test_client.get(
-        TOKENS_PATH,
+        defines.TOKENS_PATH,
         params={
             'refresh_token': auth_tokens.refresh_token
         }
@@ -56,7 +58,7 @@ def test_authorize(test_client: TestClient, fake_user):
 
     # Test expired refresh token
     response = test_client.get(
-        TOKENS_PATH,
+        defines.TOKENS_PATH,
         params={
             'refresh_token': auth_tokens.refresh_token
         }
@@ -73,7 +75,7 @@ def test_invalid_user(
     password: str = faker.password()
 
     response = test_client.get(
-        TOKENS_PATH,
+        defines.TOKENS_PATH,
         params={
             'email': email,
             'password': password
@@ -88,15 +90,17 @@ def test_invalid_tokens(test_client: TestClient, fake_user):
     user: UserSchema = fake_user[0]
     access_token = jwt.encode(
         {
-            'exp': datetime.utcnow() + timedelta(seconds=config.ACCESS_TOKEN_LIFETIME),
+            'exp': datetime.utcnow() + timedelta(
+                seconds=config.ACCESS_TOKEN_LIFETIME
+            ),
             'aud': str(user.id)
         },
-        FAKE_SECRET_KEY,
+        defines.FAKE_SECRET_KEY,
         config.ACCESS_TOKEN_ALGORITHM
     )
 
     response = test_client.get(
-        USER_PATH,
+        defines.USER_PATH,
         params={
             'access_token': access_token
         }
@@ -110,7 +114,7 @@ def test_invalid_tokens(test_client: TestClient, fake_user):
     )
 
     response = test_client.get(
-        TOKENS_PATH,
+        defines.TOKENS_PATH,
         params={
             'refresh_token': refresh_token
         }
@@ -124,14 +128,14 @@ def test_invalid_request_body(test_client: TestClient, fake_user):
     password: str = fake_user[2]
 
     response = test_client.get(
-        TOKENS_PATH,
+        defines.TOKENS_PATH,
         params={}
     )
 
     assert_app_error(response, InvalidInputFormatError)
 
     response = test_client.get(
-        TOKENS_PATH,
+        defines.TOKENS_PATH,
         params={
             'email': email
         }
@@ -140,7 +144,7 @@ def test_invalid_request_body(test_client: TestClient, fake_user):
     assert_app_error(response, InvalidInputFormatError)
 
     response = test_client.get(
-        TOKENS_PATH,
+        defines.TOKENS_PATH,
         params={
             'password': password
         }

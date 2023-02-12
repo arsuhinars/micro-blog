@@ -16,10 +16,10 @@ class AppException(Exception):
     ):
         if status_code is None:
             status_code = self.__class__.status_code
-        
+
         if error_code is None:
             error_code = self.__class__.error_code
-        
+
         if details is None:
             details = self.__class__.details
 
@@ -38,7 +38,7 @@ class InvalidInputFormatError(AppException):
     status_code = HTTPStatus.UNPROCESSABLE_ENTITY
     error_code = 2
     details = 'Invalid input format'
-    
+
 
 class AuthorizationRequiredError(AppException):
     status_code = HTTPStatus.UNAUTHORIZED

@@ -50,7 +50,7 @@ async def get_tokens(
     else:
         user_id = await auth_service.validate_refresh_token(refresh_token)
         await auth_service.reset_refresh_token(refresh_token)
-    
+
     return AuthTokens(
         access_token=await auth_service.generate_access_token(user_id),
         refresh_token=await auth_service.generate_refresh_token(user_id)
