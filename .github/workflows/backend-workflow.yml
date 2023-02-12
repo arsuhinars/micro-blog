@@ -19,7 +19,7 @@ jobs:
         run: |
           python -m pip install --upgrade pip
           pip install pipenv pytest
-          pipenv install --system --deploy --ignore-pipfile
+          pipenv install --system --deploy --ignore-pipfile --dev
 
       - name: Running tests
         working-directory: ./backend
