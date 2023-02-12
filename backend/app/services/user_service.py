@@ -8,7 +8,9 @@ from app.repositories import UserRepository
 from app.models import User
 from app.schemas import UserSchema
 from app.exceptions import (
-    InvalidInputFormatError, ContentNotFoundError, TakenLoginError
+    InvalidInputFormatError,
+    ContentNotFoundError,
+    TakenLoginError,
 )
 
 
@@ -20,28 +22,22 @@ class UserService:
     def get_password_key(password: str, salt: bytes) -> bytes:
         return pbkdf2_hmac(
             config.PASSWORD_HASH_ALGORITHM,
-            password.encode('utf-8'),
+            password.encode("utf-8"),
             salt,
             config.PASSWORD_HASH_ITERATIONS,
-            config.PASSWORD_KEY_LENGTH
+            config.PASSWORD_KEY_LENGTH,
         )
 
-    async def create(
-        self,
-        email: str,
-        password: str,
-        display_name: str
-    ) -> UserSchema:
+    async def create(self, email: str, password: str, display_name: str) -> UserSchema:
         try:
             normalized_email: str = validate_email(
-                email,
-                check_deliverability=False
+                email, check_deliverability=False
             ).email
         except EmailNotValidError:
             raise InvalidInputFormatError()
 
         if (await self._user_repo.get_by_email(email)) is not None:
-            raise TakenLoginError(details='This email is already taken')
+            raise TakenLoginError(details="This email is already taken")
 
         password_salt = os.urandom(config.PASSWORD_SALT_LENGTH)
         password_key = self.get_password_key(password, password_salt)
@@ -50,7 +46,7 @@ class UserService:
             email=normalized_email,
             password_salt=password_salt,
             password_key=password_key,
-            display_name=display_name.strip()
+            display_name=display_name.strip(),
         )
 
         return UserSchema.from_orm(await self._user_repo.save(user))

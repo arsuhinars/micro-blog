@@ -11,7 +11,9 @@ import app.config as config
 import tests.defines as defines
 from app.schemas import UserSchema, AuthTokens
 from app.exceptions import (
-    InvalidTokenError, InvalidCredentialsError, InvalidInputFormatError
+    InvalidTokenError,
+    InvalidCredentialsError,
+    InvalidInputFormatError,
 )
 from tests.utils import assert_app_error
 
@@ -22,11 +24,7 @@ def test_authorize(test_client: TestClient, fake_user):
 
     # Test user credentials
     response = test_client.get(
-        defines.TOKENS_PATH,
-        params={
-            'email': email,
-            'password': password
-        }
+        defines.TOKENS_PATH, params={"email": email, "password": password}
     )
 
     assert response.status_code == HTTPStatus.OK
@@ -35,20 +33,14 @@ def test_authorize(test_client: TestClient, fake_user):
 
     # Test access token
     response = test_client.get(
-        defines.USER_PATH,
-        params={
-            'access_token': auth_tokens.access_token
-        }
+        defines.USER_PATH, params={"access_token": auth_tokens.access_token}
     )
 
     assert response.status_code == HTTPStatus.OK
 
     # Test refresh token
     response = test_client.get(
-        defines.TOKENS_PATH,
-        params={
-            'refresh_token': auth_tokens.refresh_token
-        }
+        defines.TOKENS_PATH, params={"refresh_token": auth_tokens.refresh_token}
     )
 
     assert response.status_code == HTTPStatus.OK
@@ -58,28 +50,18 @@ def test_authorize(test_client: TestClient, fake_user):
 
     # Test expired refresh token
     response = test_client.get(
-        defines.TOKENS_PATH,
-        params={
-            'refresh_token': auth_tokens.refresh_token
-        }
+        defines.TOKENS_PATH, params={"refresh_token": auth_tokens.refresh_token}
     )
 
     assert_app_error(response, InvalidTokenError)
 
 
-def test_invalid_user(
-    test_client: TestClient,
-    faker: Faker
-):
+def test_invalid_user(test_client: TestClient, faker: Faker):
     email: str = faker.email()
     password: str = faker.password()
 
     response = test_client.get(
-        defines.TOKENS_PATH,
-        params={
-            'email': email,
-            'password': password
-        }
+        defines.TOKENS_PATH, params={"email": email, "password": password}
     )
 
     assert_app_error(response, InvalidCredentialsError)
@@ -90,34 +72,22 @@ def test_invalid_tokens(test_client: TestClient, fake_user):
     user: UserSchema = fake_user[0]
     access_token = jwt.encode(
         {
-            'exp': datetime.utcnow() + timedelta(
-                seconds=config.ACCESS_TOKEN_LIFETIME
-            ),
-            'aud': str(user.id)
+            "exp": datetime.utcnow() + timedelta(seconds=config.ACCESS_TOKEN_LIFETIME),
+            "aud": str(user.id),
         },
         defines.FAKE_SECRET_KEY,
-        config.ACCESS_TOKEN_ALGORITHM
+        config.ACCESS_TOKEN_ALGORITHM,
     )
 
-    response = test_client.get(
-        defines.USER_PATH,
-        params={
-            'access_token': access_token
-        }
-    )
+    response = test_client.get(defines.USER_PATH, params={"access_token": access_token})
 
     assert_app_error(response, InvalidTokenError)
 
     # Test invalid refresh token
-    refresh_token: str = urlsafe_b64encode(
-        os.urandom(config.REFRESH_TOKEN_SIZE)
-    )
+    refresh_token: str = urlsafe_b64encode(os.urandom(config.REFRESH_TOKEN_SIZE))
 
     response = test_client.get(
-        defines.TOKENS_PATH,
-        params={
-            'refresh_token': refresh_token
-        }
+        defines.TOKENS_PATH, params={"refresh_token": refresh_token}
     )
 
     assert_app_error(response, InvalidTokenError)
@@ -127,27 +97,14 @@ def test_invalid_request_body(test_client: TestClient, fake_user):
     email: str = fake_user[1]
     password: str = fake_user[2]
 
-    response = test_client.get(
-        defines.TOKENS_PATH,
-        params={}
-    )
+    response = test_client.get(defines.TOKENS_PATH, params={})
 
     assert_app_error(response, InvalidInputFormatError)
 
-    response = test_client.get(
-        defines.TOKENS_PATH,
-        params={
-            'email': email
-        }
-    )
+    response = test_client.get(defines.TOKENS_PATH, params={"email": email})
 
     assert_app_error(response, InvalidInputFormatError)
 
-    response = test_client.get(
-        defines.TOKENS_PATH,
-        params={
-            'password': password
-        }
-    )
+    response = test_client.get(defines.TOKENS_PATH, params={"password": password})
 
     assert_app_error(response, InvalidInputFormatError)

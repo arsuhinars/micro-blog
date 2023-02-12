@@ -9,14 +9,14 @@ from app.exceptions import AuthorizationRequiredError
 @inject
 async def validate_access_token(
     access_token: str | None = None,
-    auth_service: AuthService = Depends(Provide[AppContainer.auth_service])
+    auth_service: AuthService = Depends(Provide[AppContainer.auth_service]),
 ) -> int:
     """
-        Validate `access_token` provided by client in query parameters. Can be
-        used as the FastAPI dependency.
+    Validate `access_token` provided by client in query parameters. Can be
+    used as the FastAPI dependency.
 
-        Returns:
-            User id from decoded token
+    Returns:
+        User id from decoded token
     """
     if access_token is None:
         raise AuthorizationRequiredError()

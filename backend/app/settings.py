@@ -7,4 +7,4 @@ class AppSettings(BaseSettings):
     secret_key: str
 
     class Config:
-        secrets_dir = '/run/secrets'
+        secrets_dir = "/run/secrets"

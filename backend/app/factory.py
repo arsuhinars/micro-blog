@@ -8,7 +8,9 @@ from app.endpoints.auth import router as auth_router
 from app.settings import AppSettings
 from app.exceptions import AppException
 from app.error_handlers import (
-    handle_app_exception, handle_validation_error, handle_http_exception
+    handle_app_exception,
+    handle_validation_error,
+    handle_http_exception,
 )
 
 APP_DESCRIPTION = """
@@ -24,15 +26,10 @@ def create_app() -> FastAPI:
 
     app = FastAPI(
         redoc_url=None,
-        title='Micro-blog',
+        title="Micro-blog",
         description=APP_DESCRIPTION,
-        contact={
-            'name': 'Arseny Fedorov',
-            'url': 'https://t.me/arsuhinars'
-        },
-        license_info={
-            'name': 'MIT License'
-        }
+        contact={"name": "Arseny Fedorov", "url": "https://t.me/arsuhinars"},
+        license_info={"name": "MIT License"},
     )
     app.container = container
 
@@ -46,7 +43,7 @@ def create_app() -> FastAPI:
 
     db = container.db()
 
-    @app.on_event('startup')
+    @app.on_event("startup")
     async def on_startup():
         await db.create_database()
 

@@ -31,14 +31,14 @@ class MockedRedis:
 
 @pytest.fixture
 def mock_redis_database(mocker: MockerFixture):
-    redis_mock = mocker.patch('app.redis.RedisDatabase')
+    redis_mock = mocker.patch("app.redis.RedisDatabase")
     redis_mock.client.return_value.__aenter__.return_value = MockedRedis()
     return redis_mock
 
 
 @pytest.fixture
 def mock_database(mocker: MockerFixture):
-    return mocker.patch('app.db.Database')
+    return mocker.patch("app.db.Database")
 
 
 class FakeUserRepository:
@@ -76,10 +76,7 @@ class FakeArticleRepository:
 
     async def get_by_author_id(self, author_id: int) -> list[Article]:
         return list(
-            map(
-                self.author_table.get(author_id, []),
-                lambda id: self.id_table[id]
-            )
+            map(self.author_table.get(author_id, []), lambda id: self.id_table[id])
         )
 
     async def save(self, article: Article) -> Article:
@@ -94,26 +91,19 @@ class FakeArticleRepository:
 
 @pytest.fixture
 def test_client(
-    monkeypatch: MonkeyPatch,
-    mocker: MockerFixture,
-    mock_redis_database,
-    mock_database
+    monkeypatch: MonkeyPatch, mocker: MockerFixture, mock_redis_database, mock_database
 ):
-    monkeypatch.setenv('DATABASE_URL', '')
-    monkeypatch.setenv('REDIS_URL', '')
-    monkeypatch.setenv('SECRET_KEY', defines.TEST_SECRET_KEY)
+    monkeypatch.setenv("DATABASE_URL", "")
+    monkeypatch.setenv("REDIS_URL", "")
+    monkeypatch.setenv("SECRET_KEY", defines.TEST_SECRET_KEY)
 
     container = AppContainer()
     container.redis_db.override(mock_redis_database)
     container.db.override(mock_database)
-    container.user_repository.override(
-        providers.Singleton(FakeUserRepository)
-    )
-    container.article_repository.override(
-        providers.Singleton(FakeArticleRepository)
-    )
+    container.user_repository.override(providers.Singleton(FakeUserRepository))
+    container.article_repository.override(providers.Singleton(FakeArticleRepository))
 
-    mocker.patch('app.factory.AppContainer', lambda: container)
+    mocker.patch("app.factory.AppContainer", lambda: container)
 
     return TestClient(create_app())
 
@@ -133,9 +123,7 @@ async def fake_user(test_client: TestClient, faker: Faker):
 
 @pytest.fixture
 async def fake_users(
-    request: FixtureRequest,
-    test_client: TestClient,
-    faker: Faker
+    request: FixtureRequest, test_client: TestClient, faker: Faker
 ) -> list[UserSchema]:
     user_count: int = request.param
 
@@ -144,20 +132,17 @@ async def fake_users(
 
     users = []
     for i in range(user_count):
-        users.append(await user_service.create(
-            faker.email(),
-            faker.password(),
-            faker.first_name()
-        ))
+        users.append(
+            await user_service.create(
+                faker.email(), faker.password(), faker.first_name()
+            )
+        )
 
     return users
 
 
 @pytest.fixture
-async def access_token(
-    test_client: TestClient,
-    fake_user
-):
+async def access_token(test_client: TestClient, fake_user):
     user: UserSchema = fake_user[0]
     container: AppContainer = test_client.app.container
     return await container.auth_service().generate_access_token(user.id)

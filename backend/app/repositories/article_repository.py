@@ -8,12 +8,8 @@ from app.models import Article
 
 
 class ArticleRepository:
-
     def __init__(
-        self,
-        session_factory: Callable[
-            ..., AbstractAsyncContextManager[AsyncSession]
-        ]
+        self, session_factory: Callable[..., AbstractAsyncContextManager[AsyncSession]]
     ):
         self.session_factory = session_factory
 
