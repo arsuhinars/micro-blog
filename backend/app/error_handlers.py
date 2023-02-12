@@ -1,14 +1,14 @@
 from http import HTTPStatus
 
+from fastapi.exceptions import HTTPException, RequestValidationError
 from fastapi.responses import JSONResponse
-from fastapi.exceptions import RequestValidationError, HTTPException
 
 from app.exceptions import (
-    AppException,
-    InvalidInputFormatError,
-    AuthorizationRequiredError,
     AccessDeniedError,
+    AppException,
+    AuthorizationRequiredError,
     ContentNotFoundError,
+    InvalidInputFormatError,
     UnexpectedError,
 )
 from app.schemas import ErrorResponse

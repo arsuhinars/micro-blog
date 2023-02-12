@@ -1,11 +1,11 @@
 import asyncio
-from contextlib import asynccontextmanager, AbstractAsyncContextManager
+from contextlib import AbstractAsyncContextManager, asynccontextmanager
 from typing import Callable
 
 from sqlalchemy.ext.asyncio import (
-    create_async_engine,
-    async_scoped_session,
     AsyncConnection,
+    async_scoped_session,
+    create_async_engine,
 )
 from sqlalchemy.ext.asyncio.session import AsyncSession, async_sessionmaker
 from sqlalchemy.orm import DeclarativeBase
@@ -15,7 +15,7 @@ class Base(DeclarativeBase):
     pass
 
 
-from app.models import User, Article  # noqa: F401, E402
+from app.models import Article, User  # noqa: F401, E402
 
 
 class Database:

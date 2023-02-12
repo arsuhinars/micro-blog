@@ -2,8 +2,8 @@ from dependency_injector import containers, providers
 
 from app.db import Database
 from app.redis import RedisDatabase
-from app.repositories import UserRepository, ArticleRepository
-from app.services import UserService, ArticleService, AuthService
+from app.repositories import ArticleRepository, UserRepository
+from app.services import ArticleService, AuthService, UserService
 
 
 class AppContainer(containers.DeclarativeContainer):

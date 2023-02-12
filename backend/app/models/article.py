@@ -1,10 +1,10 @@
 from datetime import datetime
 
 from sqlalchemy import ForeignKey
-from sqlalchemy.sql import func
-from sqlalchemy.types import String
 from sqlalchemy.dialects.postgresql import JSON
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.sql import func
+from sqlalchemy.types import String
 
 import app.config as config
 from app.db import Base

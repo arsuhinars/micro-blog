@@ -1,12 +1,11 @@
+from dependency_injector.wiring import Provide, inject
 from fastapi import APIRouter, Depends
-from dependency_injector.wiring import inject, Provide
 
 from app.container import AppContainer
-from app.schemas import UserCreateSchema, UserSchema
-from app.services import UserService
 from app.dependencies import validate_access_token
 from app.exceptions import ContentNotFoundError
-
+from app.schemas import UserCreateSchema, UserSchema
+from app.services import UserService
 
 router = APIRouter(prefix="/user", tags=["User"])
 

@@ -1,8 +1,8 @@
 from datetime import date
 
-from sqlalchemy.sql import func
-from sqlalchemy.types import String, LargeBinary
 from sqlalchemy.orm import Mapped, mapped_column, relationship
+from sqlalchemy.sql import func
+from sqlalchemy.types import LargeBinary, String
 
 import app.config as config
 from app.db import Base

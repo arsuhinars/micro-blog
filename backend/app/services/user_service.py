@@ -1,17 +1,17 @@
 import os
 from hashlib import pbkdf2_hmac
 
-from email_validator import validate_email, EmailNotValidError
+from email_validator import EmailNotValidError, validate_email
 
 import app.config as config
-from app.repositories import UserRepository
-from app.models import User
-from app.schemas import UserSchema
 from app.exceptions import (
-    InvalidInputFormatError,
     ContentNotFoundError,
+    InvalidInputFormatError,
     TakenLoginError,
 )
+from app.models import User
+from app.repositories import UserRepository
+from app.schemas import UserSchema
 
 
 class UserService:

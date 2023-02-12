@@ -2,12 +2,12 @@ from datetime import date
 from http import HTTPStatus
 
 import pytest
-from fastapi.testclient import TestClient
 from faker import Faker
+from fastapi.testclient import TestClient
 
 import tests.defines as defines
-from app.schemas import UserSchema, UserCreateSchema
 from app.exceptions import InvalidInputFormatError, TakenLoginError
+from app.schemas import UserCreateSchema, UserSchema
 from tests.utils import assert_app_error
 
 

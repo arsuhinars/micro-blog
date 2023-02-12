@@ -9,12 +9,12 @@ from jose import jwt
 
 import app.config as config
 import tests.defines as defines
-from app.schemas import UserSchema, AuthTokens
 from app.exceptions import (
-    InvalidTokenError,
     InvalidCredentialsError,
     InvalidInputFormatError,
+    InvalidTokenError,
 )
+from app.schemas import AuthTokens, UserSchema
 from tests.utils import assert_app_error
 
 

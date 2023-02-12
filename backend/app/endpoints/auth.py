@@ -1,12 +1,11 @@
+from dependency_injector.wiring import Provide, inject
+from email_validator import EmailNotValidError, validate_email
 from fastapi import APIRouter, Depends
-from dependency_injector.wiring import inject, Provide
-from email_validator import validate_email, EmailNotValidError
 
 from app.container import AppContainer
-from app.services import AuthService, UserService
+from app.exceptions import InvalidCredentialsError, InvalidInputFormatError
 from app.schemas import AuthTokens
-from app.exceptions import InvalidInputFormatError, InvalidCredentialsError
-
+from app.services import AuthService, UserService
 
 router = APIRouter(tags=["Auth"])
 

@@ -1,17 +1,17 @@
 from fastapi import FastAPI
-from fastapi.exceptions import RequestValidationError, HTTPException
+from fastapi.exceptions import HTTPException, RequestValidationError
 
 from app.container import AppContainer
-from app.endpoints.user import router as user_router
 from app.endpoints.article import router as article_router
 from app.endpoints.auth import router as auth_router
-from app.settings import AppSettings
-from app.exceptions import AppException
+from app.endpoints.user import router as user_router
 from app.error_handlers import (
     handle_app_exception,
-    handle_validation_error,
     handle_http_exception,
+    handle_validation_error,
 )
+from app.exceptions import AppException
+from app.settings import AppSettings
 
 APP_DESCRIPTION = """
 

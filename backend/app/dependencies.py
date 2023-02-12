@@ -1,9 +1,9 @@
+from dependency_injector.wiring import Provide, inject
 from fastapi import Depends
-from dependency_injector.wiring import inject, Provide
 
 from app.container import AppContainer
-from app.services import AuthService
 from app.exceptions import AuthorizationRequiredError
+from app.services import AuthService
 
 
 @inject

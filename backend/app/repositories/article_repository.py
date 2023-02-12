@@ -1,8 +1,8 @@
 from contextlib import AbstractAsyncContextManager
 from typing import Callable
 
-from sqlalchemy.sql import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.sql import select
 
 from app.models import Article
 

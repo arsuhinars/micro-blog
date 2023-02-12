@@ -1,7 +1,7 @@
 from httpx import Response
 
-from app.schemas import ErrorResponse
 from app.exceptions import AppException
+from app.schemas import ErrorResponse
 
 
 def assert_app_error(response: Response, exc: type[AppException]):

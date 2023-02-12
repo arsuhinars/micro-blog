@@ -1,17 +1,17 @@
 from datetime import date
 
 import pytest
-from pytest import MonkeyPatch, FixtureRequest
-from pytest_mock import MockerFixture
 from dependency_injector import providers
-from fastapi.testclient import TestClient
 from faker import Faker
+from fastapi.testclient import TestClient
+from pytest import FixtureRequest, MonkeyPatch
+from pytest_mock import MockerFixture
 
 import tests.defines as defines
 from app.container import AppContainer
-from app.models import User, Article
-from app.schemas import UserSchema
 from app.factory import create_app
+from app.models import Article, User
+from app.schemas import UserSchema
 
 
 class MockedRedis:
