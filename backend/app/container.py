@@ -20,7 +20,9 @@ class AppContainer(containers.DeclarativeContainer):
     )
 
     user_service = providers.Singleton(UserService, user_repo=user_repository)
-    article_service = providers.Singleton(ArticleService)
+    article_service = providers.Singleton(
+        ArticleService, article_repo=article_repository
+    )
     auth_service = providers.Singleton(
         AuthService,
         redis_client_factory=redis_db.provided.client,
