@@ -24,3 +24,5 @@ class Article(Base):
     title: Mapped[str] = mapped_column(String(config.ARTICLE_TITLE_LENGTH))
     body: Mapped[list[ArticleBlock]] = mapped_column(JSON(), default=[])
     is_published: Mapped[bool] = mapped_column(default=False)
+    views_count: Mapped[int] = mapped_column(default=0)
+    likes_count: Mapped[int] = mapped_column(default=0)
