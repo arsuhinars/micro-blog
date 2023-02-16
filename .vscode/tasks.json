@@ -9,7 +9,7 @@
         {
             "type": "shell",
             "label": "compose-up-dev",
-            "command": "docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d --build"
+            "command": "docker compose -f docker-compose.yml -f docker-compose.override.yml up -d --build"
         },
         {
             "type": "shell",
