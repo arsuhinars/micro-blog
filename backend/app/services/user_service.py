@@ -53,19 +53,19 @@ class UserService:
 
     async def get_by_id(self, id: int) -> UserSchema | None:
         user = await self._user_repo.get_by_id(id)
-        if user is None:
+        if user is None or not user.is_active:
             return None
         return UserSchema.from_orm(user)
 
     async def get_by_email(self, email: str) -> UserSchema | None:
         user = await self._user_repo.get_by_email(email)
-        if user is None:
+        if user is None or not user.is_active:
             return None
         return UserSchema.from_orm(user)
 
     async def update(self, user: UserSchema) -> UserSchema:
         db_user = await self._user_repo.get_by_id(user.id)
-        if db_user is None:
+        if db_user is None or not user.is_active:
             raise ContentNotFoundError()
 
         db_user.display_name = user.display_name.strip()
@@ -75,7 +75,7 @@ class UserService:
 
     async def check_credentials(self, email: str, password: str) -> bool:
         user = await self._user_repo.get_by_email(email)
-        if user is None:
+        if user is None or not user.is_active:
             return False
 
         password_key = self.get_password_key(password, user.password_salt)
