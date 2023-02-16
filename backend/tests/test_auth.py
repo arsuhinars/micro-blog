@@ -9,6 +9,7 @@ from jose import jwt
 
 import app.config as config
 import tests.defines as defines
+from app.container import AppContainer
 from app.exceptions import (
     InvalidCredentialsError,
     InvalidInputFormatError,
@@ -108,3 +109,18 @@ def test_invalid_request_body(test_client: TestClient, fake_user):
     response = test_client.get(defines.TOKENS_PATH, params={"password": password})
 
     assert_app_error(response, InvalidInputFormatError)
+
+
+async def test_inactive_user(test_client: TestClient, fake_user):
+    user_schema: UserSchema = fake_user[0]
+    container: AppContainer = test_client.app.container
+    user_repo = container.user_repository()
+
+    user_schema = await user_repo.get_by_id(user_schema.id)
+    user_schema.is_active = False
+    await user_repo.save(user_schema)
+
+    response = test_client.get(
+        defines.TOKENS_PATH, params={"email": fake_user[1], "password": fake_user[2]}
+    )
+    assert_app_error(response, InvalidCredentialsError)
