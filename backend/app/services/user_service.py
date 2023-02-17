@@ -65,7 +65,7 @@ class UserService:
 
     async def update(self, user: UserSchema) -> UserSchema:
         db_user = await self._user_repo.get_by_id(user.id)
-        if db_user is None or not user.is_active:
+        if db_user is None or not db_user.is_active:
             raise ContentNotFoundError()
 
         db_user.display_name = user.display_name.strip()
