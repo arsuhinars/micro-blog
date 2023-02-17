@@ -13,8 +13,6 @@ router = APIRouter()
     "/article",
     response_model=ArticleSchema,
     summary="Creates new user article",
-    description="""This method will raise 403 HTTP status code (Forbidden) if article is
-    private and user is not its author""",
 )
 @inject
 def create_article(
@@ -29,7 +27,8 @@ def create_article(
     "/article/{article_id}",
     response_model=ArticleSchema,
     summary="Updates article by id",
-    description="This method requires ownership of article to update it",
+    description="""This method will raise 403 HTTP status code (Forbidden) if article is
+    private and user is not its author""",
 )
 @inject
 def update_article(
@@ -60,8 +59,8 @@ def get_article_by_id(
     "/user/{user_id}/articles_ids",
     response_model=list[int],
     summary="Get ids of user's articles",
-    description="""Returns only available articles, e.g if it is caused by other users,
-    only public articles are returned.""",
+    description="""Returns only available articles, e.g if it is requested by other
+    users, then only public articles are returned.""",
 )
 def get_user_articles(
     user_id: int,
