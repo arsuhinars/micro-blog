@@ -32,3 +32,13 @@ class ArticleRepository:
             session.add(article)
             await session.flush()
             await session.commit()
+
+    async def add_view(self, id: int):
+        async with self.session_factory() as session:
+            article = await session.get(Article, id)
+            if article is None:
+                return
+
+            article.views_count = Article.views_count + 1
+            await session.flush()
+            await session.commit()
