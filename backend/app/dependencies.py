@@ -24,3 +24,20 @@ async def validate_access_token(
     if access_token is None:
         raise AuthorizationRequiredError()
     return await auth_service.validate_access_token(access_token)
+
+
+@inject
+async def validate_optional_access_token(
+    access_token: str | None = None,
+    auth_service: AuthService = Depends(Provide[AppContainer.auth_service]),
+) -> int | None:
+    """
+    Validate `access_token` provided by client in query parameters. Can be used
+    as the FastAPI dependency.
+
+    Returns:
+        User id from decoded token or `None` if `access_token` is not given
+    """
+    if access_token is None:
+        return None
+    return await auth_service.validate_access_token(access_token)
