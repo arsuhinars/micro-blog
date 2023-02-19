@@ -17,6 +17,9 @@ async def validate_access_token(
 
     Returns:
         User id from decoded token
+
+    Raises:
+        AuthorizationRequiredError: if provided `access_token` is `None`
     """
     if access_token is None:
         raise AuthorizationRequiredError()
