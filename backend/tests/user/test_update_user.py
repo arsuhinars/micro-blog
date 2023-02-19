@@ -81,10 +81,10 @@ def test_invalid_data(test_client: TestClient, access_token):
     assert_app_error(response, InvalidInputFormatError)
 
 
-def test_invalid_token(test_client: TestClient, faker: Faker, fake_access_token):
+def test_invalid_token(test_client: TestClient, faker: Faker, invalid_access_token):
     response = test_client.put(
         defines.USER_PATH,
-        params={"access_token": fake_access_token},
+        params={"access_token": invalid_access_token},
         json={"display_name": faker.first_name()},
     )
 

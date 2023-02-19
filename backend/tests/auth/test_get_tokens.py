@@ -66,10 +66,10 @@ def test_invalid_user(test_client: TestClient, faker: Faker):
     assert_app_error(response, InvalidCredentialsError)
 
 
-def test_invalid_tokens(test_client: TestClient, fake_access_token):
+def test_invalid_tokens(test_client: TestClient, invalid_access_token):
     # Test invalid access token
     response = test_client.get(
-        defines.USER_PATH, params={"access_token": fake_access_token}
+        defines.USER_PATH, params={"access_token": invalid_access_token}
     )
 
     assert_app_error(response, InvalidTokenError)

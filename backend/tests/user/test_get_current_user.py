@@ -16,9 +16,9 @@ def test_valid_data(test_client: TestClient, test_user, access_token):
     assert received_user.dict() == user.dict()
 
 
-def test_invalid_token(test_client: TestClient, test_user, fake_access_token):
+def test_invalid_token(test_client: TestClient, test_user, invalid_access_token):
     response = test_client.get(
-        defines.USER_PATH, params={"access_token": fake_access_token}
+        defines.USER_PATH, params={"access_token": invalid_access_token}
     )
 
     assert_app_error(response, InvalidTokenError)

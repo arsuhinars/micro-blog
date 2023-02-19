@@ -160,7 +160,7 @@ async def access_token(test_client: TestClient, test_user):
 
 
 @pytest.fixture
-def fake_access_token(test_user):
+def invalid_access_token(test_user):
     return jwt.encode(
         {
             "exp": datetime.utcnow() + timedelta(seconds=config.ACCESS_TOKEN_LIFETIME),
