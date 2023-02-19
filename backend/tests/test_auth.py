@@ -19,9 +19,9 @@ from app.schemas import AuthTokens, UserSchema
 from tests.utils import assert_app_error
 
 
-def test_authorize(test_client: TestClient, fake_user):
-    email: str = fake_user[1]
-    password: str = fake_user[2]
+def test_authorize(test_client: TestClient, test_user):
+    email: str = test_user[1]
+    password: str = test_user[2]
 
     # Test user credentials
     response = test_client.get(
@@ -94,9 +94,9 @@ def test_invalid_tokens(test_client: TestClient, fake_user):
     assert_app_error(response, InvalidTokenError)
 
 
-def test_invalid_request_body(test_client: TestClient, fake_user):
-    email: str = fake_user[1]
-    password: str = fake_user[2]
+def test_invalid_request_body(test_client: TestClient, test_user):
+    email: str = test_user[1]
+    password: str = test_user[2]
 
     response = test_client.get(defines.TOKENS_PATH, params={})
 
@@ -111,8 +111,8 @@ def test_invalid_request_body(test_client: TestClient, fake_user):
     assert_app_error(response, InvalidInputFormatError)
 
 
-async def test_inactive_user(test_client: TestClient, fake_user):
-    user_schema: UserSchema = fake_user[0]
+async def test_inactive_user(test_client: TestClient, test_user):
+    user_schema: UserSchema = test_user[0]
     container: AppContainer = test_client.app.container
     user_repo = container.user_repository()
 
@@ -121,6 +121,6 @@ async def test_inactive_user(test_client: TestClient, fake_user):
     await user_repo.save(user_schema)
 
     response = test_client.get(
-        defines.TOKENS_PATH, params={"email": fake_user[1], "password": fake_user[2]}
+        defines.TOKENS_PATH, params={"email": test_user[1], "password": test_user[2]}
     )
     assert_app_error(response, InvalidCredentialsError)

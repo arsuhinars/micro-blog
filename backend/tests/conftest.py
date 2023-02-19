@@ -109,7 +109,7 @@ def test_client(
 
 
 @pytest.fixture
-async def fake_user(test_client: TestClient, faker: Faker):
+async def test_user(test_client: TestClient, faker: Faker):
     email = faker.email()
     password = faker.password()
 
@@ -142,7 +142,7 @@ async def fake_users(
 
 
 @pytest.fixture
-async def access_token(test_client: TestClient, fake_user):
-    user: UserSchema = fake_user[0]
+async def access_token(test_client: TestClient, test_user):
+    user: UserSchema = test_user[0]
     container: AppContainer = test_client.app.container
     return await container.auth_service().generate_access_token(user.id)
