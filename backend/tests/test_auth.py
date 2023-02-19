@@ -1,11 +1,9 @@
 import os
 from base64 import urlsafe_b64encode
-from datetime import datetime, timedelta
 from http import HTTPStatus
 
 from faker import Faker
 from fastapi.testclient import TestClient
-from jose import jwt
 
 import app.config as config
 import tests.defines as defines
@@ -68,19 +66,11 @@ def test_invalid_user(test_client: TestClient, faker: Faker):
     assert_app_error(response, InvalidCredentialsError)
 
 
-def test_invalid_tokens(test_client: TestClient, fake_user):
+def test_invalid_tokens(test_client: TestClient, fake_access_token):
     # Test invalid access token
-    user: UserSchema = fake_user[0]
-    access_token = jwt.encode(
-        {
-            "exp": datetime.utcnow() + timedelta(seconds=config.ACCESS_TOKEN_LIFETIME),
-            "aud": str(user.id),
-        },
-        defines.FAKE_SECRET_KEY,
-        config.ACCESS_TOKEN_ALGORITHM,
+    response = test_client.get(
+        defines.USER_PATH, params={"access_token": fake_access_token}
     )
-
-    response = test_client.get(defines.USER_PATH, params={"access_token": access_token})
 
     assert_app_error(response, InvalidTokenError)
 

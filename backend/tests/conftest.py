@@ -1,12 +1,14 @@
-from datetime import date
+from datetime import date, datetime, timedelta
 
 import pytest
 from dependency_injector import providers
 from faker import Faker
 from fastapi.testclient import TestClient
+from jose import jwt
 from pytest import FixtureRequest, MonkeyPatch
 from pytest_mock import MockerFixture
 
+import app.config as config
 import tests.defines as defines
 from app.container import AppContainer
 from app.factory import create_app
@@ -122,7 +124,7 @@ async def test_user(test_client: TestClient, faker: Faker):
 
 
 @pytest.fixture
-async def fake_users(
+async def test_users(
     request: FixtureRequest, test_client: TestClient, faker: Faker
 ) -> list[UserSchema]:
     user_count: int = request.param
@@ -146,3 +148,15 @@ async def access_token(test_client: TestClient, test_user):
     user: UserSchema = test_user[0]
     container: AppContainer = test_client.app.container
     return await container.auth_service().generate_access_token(user.id)
+
+
+@pytest.fixture
+def fake_access_token(test_user):
+    return jwt.encode(
+        {
+            "exp": datetime.utcnow() + timedelta(seconds=config.ACCESS_TOKEN_LIFETIME),
+            "aud": str(test_user[0].id),
+        },
+        defines.FAKE_SECRET_KEY,
+        config.ACCESS_TOKEN_ALGORITHM,
+    )
