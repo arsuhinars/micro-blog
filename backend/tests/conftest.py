@@ -84,9 +84,18 @@ class FakeArticleRepository:
     async def save(self, article: Article) -> Article:
         if article.id is None:
             article.id = self.counter
+            article.creation_time = datetime.now()
+            article.update_time = datetime.now()
+            article.body = []
+            article.is_published = False
+            article.views_count = 0
             self.counter += 1
 
         self.id_table[article.id] = article
+
+        if article.author_id not in self.author_table:
+            self.author_table[article.author_id] = set()
+
         self.author_table[article.author_id].add(article.id)
         return article
 
